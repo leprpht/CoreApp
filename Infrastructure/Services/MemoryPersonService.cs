@@ -14,8 +14,7 @@ public class MemoryPersonService(IContactUnitOfWork unitOfWork, IMapper mapper) 
         var dtos = result.Items.Select(PersonDto.FromEntity).ToList();
         return new PagedResult<PersonDto>(dtos, result.TotalCount, result.Page, result.PageSize);
     }
-
-    // Остальные методы  просто добавь пустые с throw new NotImplementedException()
+    
     public async Task<PersonDto?> FindById(Guid id)
     {
         var person = await unitOfWork.Persons.FindByIdAsync(id);

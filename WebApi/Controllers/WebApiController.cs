@@ -2,7 +2,7 @@ using AppCore.Dto;
 using AppCore.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoreApp.Controllers;
+namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/contacts")]
@@ -12,7 +12,7 @@ public class ContactsController(IPersonService service) : ControllerBase
     public async Task<IActionResult> GetAll(int page = 1, int size = 10)
     {
         var result = await service.FindAllPeoplePaged(page, size);
-        return Ok(result); // Возвращает 200 OK и список людей в JSON
+        return Ok(result);
     }
 
     // Поиск человека по ID: 
