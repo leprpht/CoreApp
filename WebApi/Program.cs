@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+builder.Services.AddContactsModule(builder.Configuration);
+
 builder.Services.AddSingleton<IPersonRepository, MemoryPersonRepository>();
 builder.Services.AddSingleton<ICompanyRepository, MemoryCompanyRepository>();
 builder.Services.AddSingleton<IOrganizationRepository, MemoryOrganizationRepository>();
@@ -16,7 +18,6 @@ builder.Services.AddSingleton<IOrganizationRepository, MemoryOrganizationReposit
 builder.Services.AddSingleton<IContactUnitOfWork, MemoryContactUnitOfWork>();
 
 builder.Services.AddSingleton<IPersonService, MemoryPersonService>();
-builder.Services.AddControllers();
 
 var app = builder.Build();
 

@@ -1,6 +1,86 @@
-@CoreApp_HostAddress = http://localhost:5059
+@HostAddress = http://localhost:5059
 
-GET {{CoreApp_HostAddress}}/weatherforecast/
+GET {{HostAddress}}/api/contacts?page=1&size=10
 Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/contacts?page=2&size=5
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/contacts/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+###
+
+POST {{HostAddress}}/api/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Anna",
+  "lastName": "Kowalska",
+  "email": "anna.kowalska@example.com",
+  "phone": "+48 123 456 789",
+  "gender": 1,
+  "position": null,
+  "birthDate": "1990-05-15T00:00:00Z",
+  "employerId": null,
+  "address": null
+}
+
+###
+
+POST {{HostAddress}}/api/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Marek",
+  "lastName": "Nowak",
+  "email": "marek.nowak@firma.pl",
+  "phone": "+48 600 700 800",
+  "gender": 0,
+  "position": "Senior Developer",
+  "birthDate": "1985-03-22T00:00:00Z",
+  "employerId": null,
+  "address": {
+    "street": "ul. Długa 10",
+    "city": "Kraków",
+    "postalCode": "30-001",
+    "country": "Poland",
+    "type": 0
+  }
+}
+
+###
+
+# Replace the GUID below with a real ID
+PUT {{HostAddress}}/api/contacts/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "firstName": "Anna",
+  "lastName": "Kowalska-Nowak",
+  "email": "anna.nowak@example.com",
+  "phone": "+48 123 456 789",
+  "gender": 1,
+  "position": "Project Manager",
+  "birthDate": "1990-05-15T00:00:00Z",
+  "employerId": null,
+  "status": 0,
+  "address": {
+    "street": "ul. Floriańska 5",
+    "city": "Kraków",
+    "postalCode": "31-019",
+    "country": "Poland",
+    "type": 0
+  }
+}
+
+###
+
+# Replace the GUID below with a real ID
+DELETE {{HostAddress}}/api/contacts/00000000-0000-0000-0000-000000000000
 
 ###

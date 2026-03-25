@@ -31,7 +31,7 @@ public class MemoryPersonService(IContactUnitOfWork unitOfWork, IMapper mapper) 
     {
         var person = mapper.Map<UpdatePersonDto, Person>(dto);
         person.Id = id;
-        await unitOfWork.Persons.AddAsync(person);
+        await unitOfWork.Persons.UpdateAsync(person);
     }
 
     public async Task DeletePerson(Guid id)
