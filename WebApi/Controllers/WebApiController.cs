@@ -14,13 +14,15 @@ public class ContactsController(IPersonService service) : ControllerBase
         var result = await service.FindAllPeoplePaged(page, size);
         return Ok(result);
     }
-
-    // Поиск человека по ID: 
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var person = await service.FindById(id);
-        if (person == null) return NotFound();
+        
+        if (person == null)
+            return NotFound();
+        
         return Ok(person);
     }
 
