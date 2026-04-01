@@ -1,8 +1,8 @@
 using AppCore.Repositories;
 using AppCore.Services;
-using AutoMapper;
 using Infrastructure.Memory;
 using Infrastructure.Services;
+using WebApi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +19,9 @@ builder.Services.AddSingleton<IContactUnitOfWork, MemoryContactUnitOfWork>();
 
 builder.Services.AddSingleton<IPersonService, MemoryPersonService>();
 
+builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
@@ -26,6 +29,7 @@ if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
+app.UseExceptionHandler();
 app.MapControllers();
 
 app.Run();
