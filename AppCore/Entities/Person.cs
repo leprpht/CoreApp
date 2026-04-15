@@ -14,4 +14,5 @@ public class Person : Contact
     public Gender Gender { get; set; }
     public string? Position { get; set; }
     public Company? Employer { get; set; }
+    public Organization? Organization { get; set; }
 }
