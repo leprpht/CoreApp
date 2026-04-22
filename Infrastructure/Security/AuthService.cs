@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using AppCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +20,7 @@ public class AuthService(
 {
     public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
     {
-        var user = await userManager.FindByEmailAsync(dto.Email) 
+        var user = await userManager.FindByEmailAsync(dto.Email)
             ?? throw new Exception("Invalid email or password.");
 
         if (!await userManager.CheckPasswordAsync(user, dto.Password))
@@ -28,17 +29,51 @@ public class AuthService(
             throw new Exception("Invalid email or password.");
         }
 
-        if (user.Status != SystemUserStatus.Active) throw new Exception("Account inactive.");
-        
+        if (user.Status != SystemUserStatus.Active)
+            throw new Exception("Account is inactive.");
+
         await userManager.ResetAccessFailedCountAsync(user);
+        return await GenerateAuthResponseAsync(user);
+    }
+
+    public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
+    {
+        if (await userManager.FindByEmailAsync(dto.Email) != null)
+            throw new Exception("Email is already in use.");
+
+        var user = new CrmUser
+        {
+            UserName   = dto.Email,
+            Email      = dto.Email,
+            FirstName  = dto.FirstName,
+            LastName   = dto.LastName,
+            FullName   = $"{dto.FirstName} {dto.LastName}",
+            Department = dto.Department,
+            Status     = SystemUserStatus.Active,
+            EmailConfirmed = true   // skip e-mail confirmation flow for now
+        };
+
+        var result = await userManager.CreateAsync(user, dto.Password);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"Registration failed: {errors}");
+        }
+
+        // Default role for self-registered users
+        await userManager.AddToRoleAsync(user, UserRole.Salesperson.ToString());
+
         return await GenerateAuthResponseAsync(user);
     }
 
     public async Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenDto dto)
     {
         var principal = GetPrincipalFromExpiredToken(dto.AccessToken);
-        var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("Invalid token.");
-        var user = await userManager.FindByIdAsync(userId) ?? throw new Exception("User not found.");
+        var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? throw new Exception("Invalid token.");
+        var user = await userManager.FindByIdAsync(userId)
+            ?? throw new Exception("User not found.");
 
         var refreshToken = await context.RefreshTokens
             .FirstOrDefaultAsync(t => t.Token == dto.RefreshToken && t.UserId == userId)
@@ -57,7 +92,7 @@ public class AuthService(
     {
         var token = await context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken)
             ?? throw new Exception("Token does not exist.");
-        
+
         token.Revoke();
         await context.SaveChangesAsync();
     }
@@ -70,18 +105,18 @@ public class AuthService(
 
         return new AuthResponseDto
         {
-            AccessToken = accessToken,
+            AccessToken  = accessToken,
             RefreshToken = refreshToken.Token,
-            ExpiresAt = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationInMinutes),
+            ExpiresAt    = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationInMinutes),
             User = new UserDto
             {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email!,
+                Id         = user.Id,
+                FirstName  = user.FirstName,
+                LastName   = user.LastName,
+                Email      = user.Email!,
                 Department = user.Department,
-                Status = user.Status,
-                Roles = roles
+                Status     = user.Status,
+                Roles      = roles
             }
         };
     }
@@ -95,7 +130,7 @@ public class AuthService(
             new(ClaimTypes.GivenName, user.FirstName),
             new(ClaimTypes.Surname, user.LastName),
             new("department", user.Department),
-            new("status", user.Status.ToString()), // Added for the ActiveUser policy
+            new("status", user.Status.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -106,7 +141,9 @@ public class AuthService(
             audience: jwtOptions.Audience,
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationInMinutes),
-            signingCredentials: new SigningCredentials(jwtOptions.GetSymmetricKey(), SecurityAlgorithms.HmacSha256)
+            signingCredentials: new SigningCredentials(
+                jwtOptions.GetSymmetricKey(),
+                SecurityAlgorithms.HmacSha256)
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -116,8 +153,8 @@ public class AuthService(
     {
         var refreshToken = new RefreshToken
         {
-            UserId = userId,
-            Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+            UserId    = userId,
+            Token     = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
             ExpiresAt = DateTime.UtcNow.AddDays(jwtOptions.RefreshTokenDays)
         };
 
@@ -130,15 +167,18 @@ public class AuthService(
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = false,
-            ValidateIssuer = false,
+            ValidateAudience         = false,
+            ValidateIssuer           = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = jwtOptions.GetSymmetricKey(),
-            ValidateLifetime = false 
+            IssuerSigningKey         = jwtOptions.GetSymmetricKey(),
+            ValidateLifetime         = false
         };
 
-        var principal = new JwtSecurityTokenHandler().ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
+        var principal = new JwtSecurityTokenHandler()
+            .ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+
+        if (securityToken is not JwtSecurityToken jwt ||
+            !jwt.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
             throw new SecurityTokenException("Invalid token");
 
         return principal;

@@ -28,15 +28,17 @@ public record PersonDto : ContactDtos
             Gender = person.Gender,
             Status = person.Status,
             CreatedAt = person.CreatedAt,
-            Tags = person.Tags.Select(t => t.Name).ToList(),
+            Tags = person.Tags?.Select(t => t.Name).ToList() ?? [],
             EmployerId = person.Employer?.Id,
-            Notes = person.Notes.Select(NoteDto.FromEntity).ToList() ?? [],
-            Address = new AddressDto(
-                person.Address.Street,
-                person.Address.City,
-                person.Address.PostalCode,
-                person.Address.Country,
-                person.Address.Type)
+            Notes = person.Notes?.Select(NoteDto.FromEntity).ToList() ?? [],
+            Address = person.Address != null
+                ? new AddressDto(
+                    person.Address.Street,
+                    person.Address.City,
+                    person.Address.PostalCode,
+                    person.Address.Country,
+                    person.Address.Type)
+                : null
         };
     }
 }

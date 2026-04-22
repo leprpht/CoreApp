@@ -8,6 +8,15 @@ public record LoginDto
     public string Password { get; init; } = string.Empty;
 }
 
+public record RegisterDto
+{
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
+    public string Email { get; init; } = string.Empty;
+    public string Password { get; init; } = string.Empty;
+    public string Department { get; init; } = string.Empty;
+}
+
 public record AuthResponseDto
 {
     public string AccessToken { get; init; } = string.Empty;

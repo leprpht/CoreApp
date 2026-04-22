@@ -1,5 +1,7 @@
+using AppCore.Data;
 using AppCore.Repositories;
 using AppCore.Services;
+using Infrastructure.Data;
 using Infrastructure.EntityFramework.Context;
 using Infrastructure.EntityFramework.Entities;
 using Infrastructure.EntityFramework.Repositories;
@@ -41,6 +43,10 @@ public static class ContactsInfrastructureModule
             .AddDefaultTokenProviders();
 
         services.AddScoped<IPersonService, PersonService>();
+
+        // Register data seeders
+        services.AddScoped<IDataSeeder, IdentityDbSeeder>();
+
         return services;
     }
 

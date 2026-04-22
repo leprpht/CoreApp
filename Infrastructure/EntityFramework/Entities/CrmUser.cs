@@ -23,10 +23,10 @@ public class CrmUser : IdentityUser, ISystemUser
 
     public void Deactivate(DateTime now)
     {
-        if (Status == SystemUserStatus.Active)
-        {
-            Status = SystemUserStatus.Inactive;
-            DeactivatedAt = now;
-        }
+        if (Status != SystemUserStatus.Active)
+            return;
+
+        Status = SystemUserStatus.Inactive;
+        DeactivatedAt = now;
     }
 }

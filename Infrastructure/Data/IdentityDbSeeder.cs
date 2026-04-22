@@ -1,3 +1,4 @@
+using AppCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Infrastructure.EntityFramework.Entities;

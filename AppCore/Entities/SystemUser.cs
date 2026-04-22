@@ -19,12 +19,3 @@ public enum SystemUserStatus
     Locked,
     PendingActivation
 }
-
-public enum UserRole
-{
-    Administrator,
-    SalesManager,
-    Salesperson,
-    SupportAgent,
-    ReadOnly
-}

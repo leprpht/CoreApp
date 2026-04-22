@@ -4,20 +4,31 @@
 # AUTH
 # ─────────────────────────────────────────────────────────
 
+### Register
+POST {{HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Anna",
+  "lastName":  "Kowalska",
+  "email":     "annaa@crm.pl",
+  "password":  "Secret@99",
+  "department": "Sales"
+}
+
 ### Login
 POST {{HostAddress}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@example.com",
-  "password": "password"
+  "email": "annaa@crm.pl",
+  "password": "Secret@99"
 }
 
 ###
 
-# Save tokens from response manually if needed
-@accessToken = YOUR_ACCESS_TOKEN_HERE
-@refreshToken = YOUR_REFRESH_TOKEN_HERE
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImZiMzBmZGY4LWIyZjYtNDBlMy04NDcyLWE5ZDRkMzRkMWU5MyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFubmFhQGNybS5wbCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2dpdmVubmFtZSI6IkFubmEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zdXJuYW1lIjoiS293YWxza2EiLCJkZXBhcnRtZW50IjoiU2FsZXMiLCJzdGF0dXMiOiJBY3RpdmUiLCJqdGkiOiI2ZDlmMjQwZi05ZmQ2LTQ2MGUtOWJmNS0xZDI3ODIzYjM5ZGUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJTYWxlc3BlcnNvbiIsImV4cCI6MTc3Njg1MzI2MCwiaXNzIjoiQ3JtQXBpIiwiYXVkIjoiQ3JtQ2xpZW50cyJ9.60trvtUY_PVsli2Xj3yM4KKE4zbRWZ4sf4cUMLBTR0o
+@refreshToken = CDreFdj91En5xWGwry7n1lmx9FOsQeWa+ofUonT28gJmLcHIcnivHqZYmpHCmQWs7uvwrBcbX5pJrUAS+FthUA==
 
 ### Refresh Access Token
 POST {{HostAddress}}/api/auth/refresh
@@ -57,7 +68,6 @@ Accept: application/json
 
 ###
 
-# Replace with real contact ID from response
 @contactId = 00000000-0000-0000-0000-000000000000
 
 ### Get Contact Notes

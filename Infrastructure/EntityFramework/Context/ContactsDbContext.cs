@@ -1,3 +1,4 @@
+using AppCore.Authorization;
 using AppCore.Entities;
 using Infrastructure.EntityFramework.Entities;
 using Infrastructure.Security;
