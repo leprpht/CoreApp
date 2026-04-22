@@ -1,19 +1,75 @@
 @HostAddress = http://localhost:5059
 
-# ── Persons ────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────
+# AUTH
+# ─────────────────────────────────────────────────────────
 
-GET {{HostAddress}}/api/contacts?page=1&size=10
+### Login
+POST {{HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+
+###
+
+# Save tokens from response manually if needed
+@accessToken = YOUR_ACCESS_TOKEN_HERE
+@refreshToken = YOUR_REFRESH_TOKEN_HERE
+
+### Refresh Access Token
+POST {{HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "accessToken": "{{accessToken}}",
+  "refreshToken": "{{refreshToken}}"
+}
+
+###
+
+### Revoke Refresh Token
+POST {{HostAddress}}/api/auth/revoke
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+"{{refreshToken}}"
+
+###
+
+### Get Current User
+GET {{HostAddress}}/api/auth/me
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
-# ── Notes ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────
+# CONTACTS
+# ─────────────────────────────────────────────────────────
 
-# Zastąp {contactId} prawdziwym ID osoby z odpowiedzi GET powyżej
+### Get Contacts
+GET {{HostAddress}}/api/contacts?page=1&size=10
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+
+# Replace with real contact ID from response
 @contactId = 00000000-0000-0000-0000-000000000000
 
-### Dodaj notatkę do osoby
+### Get Contact Notes
+GET {{HostAddress}}/api/contacts/{{contactId}}/notes
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+
+### Add Note To Contact
 POST {{HostAddress}}/api/contacts/{{contactId}}/notes
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
@@ -21,17 +77,24 @@ Content-Type: application/json
   "createdBy": "admin"
 }
 
-### Pobierz notatki osoby
-GET {{HostAddress}}/api/contacts/{{contactId}}/notes
-Accept: application/json
+###
 
-### Usuń notatkę (zastąp {noteId} prawdziwym ID notatki)
+# Replace with real note ID
 @noteId = 00000000-0000-0000-0000-000000000000
 
+### Delete Note
 DELETE {{HostAddress}}/api/contacts/{{contactId}}/notes/{{noteId}}
+Authorization: Bearer {{accessToken}}
 
-### Test błędu - nieistniejąca osoba
+###
+
+# ─────────────────────────────────────────────────────────
+# ERROR TESTS
+# ─────────────────────────────────────────────────────────
+
+### Test error - non-existing contact
 POST {{HostAddress}}/api/contacts/99999999-9999-9999-9999-999999999999/notes
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
