@@ -19,7 +19,6 @@ public class MemoryCompanyRepository : MemoryGenericRepository<Company>, ICompan
 
     public Task<IEnumerable<Person>> GetEmployeesAsync(Guid companyId)
     {
-        // В реальной базе это был бы JOIN, здесь просто пример:
-        throw new NotImplementedException("Для этого метода нужен доступ к репозиторию людей");
+        throw new NotImplementedException();
     }
 }
