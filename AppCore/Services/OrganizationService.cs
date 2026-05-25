@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using AppCore.Dto;
 using AppCore.Entities;
 using AppCore.Repositories;
@@ -8,7 +9,7 @@ namespace AppCore.Services;
 
 public class OrganizationService(IOrganizationRepository orgRepository, IHttpClientFactory httpClientFactory)
 {
-    private const string KrsApiUrl = "https://api.bisnode.pl/krs";
+    private const string KrsApiUrl = "https://api-krs.ms.gov.pl/api/krs/OdpisAktualny/{krs}?rejestr=P&format=json";
 
     public async Task<OrganizationDto> CreateOrganizationAsync(CreateOrganizationDto dto)
     {
@@ -41,7 +42,7 @@ public class OrganizationService(IOrganizationRepository orgRepository, IHttpCli
         try
         {
             var client = httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{KrsApiUrl}/{krs}");
+            var response = await client.GetAsync(KrsApiUrl.Replace("{krs}", krs));
             return response.IsSuccessStatusCode;
         }
         catch
@@ -56,7 +57,7 @@ public class OrganizationService(IOrganizationRepository orgRepository, IHttpCli
         {
             var client = httpClientFactory.CreateClient();
             var response = await client.GetAsync(url);
-            return response.StatusCode == System.Net.HttpStatusCode.OK;
+            return response.StatusCode == HttpStatusCode.OK;
         }
         catch
         {
