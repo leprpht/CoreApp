@@ -18,18 +18,25 @@ public class EfOrganizationRepository(ContactsDbContext context)
             .Where(p => p.Organization != null && p.Organization.Id == organizationId)
             .ToListAsync();
 
-    public Task CreateAsync(Organization organization)
+    public async Task CreateAsync(Organization organization)
     {
-        throw new NotImplementedException();
+        await context.Organizations.AddAsync(organization);
+        await context.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(Organization organization)
+    public async Task UpdateAsync(Organization organization)
     {
-        throw new NotImplementedException();
+        context.Organizations.Update(organization);
+        await context.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var organization = await context.Organizations.FindAsync(id);
+        if (organization != null)
+        {
+            context.Organizations.Remove(organization);
+            await context.SaveChangesAsync();
+        }
     }
 }

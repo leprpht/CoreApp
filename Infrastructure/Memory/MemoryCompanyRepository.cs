@@ -19,6 +19,10 @@ public class MemoryCompanyRepository : MemoryGenericRepository<Company>, ICompan
 
     public Task<IEnumerable<Person>> GetEmployeesAsync(Guid companyId)
     {
-        throw new NotImplementedException();
+        var company = _data.Values.FirstOrDefault(c => c.Id == companyId);
+        if (company?.Employees == null)
+            return Task.FromResult(Enumerable.Empty<Person>());
+        
+        return Task.FromResult(company.Employees.AsEnumerable());
     }
 }

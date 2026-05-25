@@ -50,7 +50,7 @@ public class AuthService(
             FullName   = $"{dto.FirstName} {dto.LastName}",
             Department = dto.Department,
             Status     = SystemUserStatus.Active,
-            EmailConfirmed = true   // skip e-mail confirmation flow for now
+            EmailConfirmed = true
         };
 
         var result = await userManager.CreateAsync(user, dto.Password);

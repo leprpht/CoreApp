@@ -13,21 +13,30 @@ public class MemoryOrganizationRepository : MemoryGenericRepository<Organization
 
     public Task<IEnumerable<Person>> GetMembersAsync(Guid organizationId)
     {
-        throw new NotImplementedException();
+        var organization = _data.Values.FirstOrDefault(o => o.Id == organizationId);
+        if (organization?.Members == null)
+            return Task.FromResult(Enumerable.Empty<Person>());
+        
+        return Task.FromResult(organization.Members.AsEnumerable());
     }
 
-    public Task CreateAsync(Organization organization)
+    public async Task CreateAsync(Organization organization)
     {
-        throw new NotImplementedException();
+        await AddAsync(organization);
     }
 
     public Task UpdateAsync(Organization organization)
     {
-        throw new NotImplementedException();
+        if (_data.ContainsKey(organization.Id))
+        {
+            _data[organization.Id] = organization;
+        }
+        return Task.CompletedTask;
     }
 
     public Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        _data.Remove(id);
+        return Task.CompletedTask;
     }
 }
