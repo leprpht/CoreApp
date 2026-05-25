@@ -17,4 +17,19 @@ public class EfOrganizationRepository(ContactsDbContext context)
         await context.People
             .Where(p => p.Organization != null && p.Organization.Id == organizationId)
             .ToListAsync();
+
+    public Task CreateAsync(Organization organization)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(Organization organization)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

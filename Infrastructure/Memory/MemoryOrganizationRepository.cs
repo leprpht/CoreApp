@@ -15,4 +15,19 @@ public class MemoryOrganizationRepository : MemoryGenericRepository<Organization
     {
         throw new NotImplementedException();
     }
+
+    public Task CreateAsync(Organization organization)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(Organization organization)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

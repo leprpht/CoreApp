@@ -2,8 +2,10 @@ using AppCore.Entities;
 
 namespace AppCore.Repositories;
 
-public interface IOrganizationRepository : IGenericRepositoryAsync<Organization>
+public interface IOrganizationRepository
 {
-    Task<IEnumerable<Organization>> GetByTypeAsync(OrganizationType type);
-    Task<IEnumerable<Person>> GetMembersAsync(Guid organizationId);
+    Task<Organization?> FindByIdAsync(Guid id);
+    Task CreateAsync(Organization organization);
+    Task UpdateAsync(Organization organization);
+    Task DeleteAsync(Guid id);
 }

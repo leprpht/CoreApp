@@ -31,16 +31,6 @@ public record OrganizationDto : ContactDtos
     };
 }
 
-public record CreateOrganizationDto(
-    string Name,
-    OrganizationType Type,
-    string? KRS,
-    string? Website,
-    string? Mission,
-    string Email,
-    string Phone,
-    AddressDto? Address);
-
 public record UpdateOrganizationDto(
     string? Name,
     OrganizationType? Type,
