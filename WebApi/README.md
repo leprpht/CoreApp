@@ -46,39 +46,6 @@ Ema
 il:    admin@crm.pl
 Password: Admin@123!
 
-
-##
-# Run Tests
-
-
-dot
-net test
-
-
-##
-Configuration
-
-Settings live in WebApi/appsettings.json (and `appsettings.Development.json`):
-
-
-{
-"Co
-nnectionStrings": {
-"CrmDb": "Data Source=crm.db"
-},
-"Jwt": {
-"Issuer": "CrmApi",
-"Audience": "CrmClients",
-"SecretKey": "super-secret-key-that-is-at-least-32-chars!",
-"ExpiryInMinutes": 60,
-"RefreshTokenDays": 7
-}
-}
-
-
-> Note
-: Change SecretKey to a strong random value before deploying.
-
 ## API Reference
 
 ### Authentication
