@@ -1,3 +1,5 @@
+### GitHub link: https://github.com/leprpht/CoreApp
+
 A .NET 9 Web API for managing CRM contacts, built with a clean layered architecture (AppCore / Infrastructure / WebApi).
 
 ## Features
